@@ -13,9 +13,17 @@ const program = new Command();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-/** Template name pilihan user */
-type TemplateChoice =
+/** Pilihan level pertama */
+type MainTemplateChoice =
   | "next-js-fullstack"
+  | "next-js-frontend"
+  | "vue-dynamic-page"
+  | "vue-landing-page";
+
+/** Template folder final yang ada di /templates */
+type TemplateChoice =
+  | "next-js-fullstack-with-mongodb"
+  | "next-js-fullstack-with-firebase"
   | "next-js-frontend"
   | "vue-dynamic-page"
   | "vue-landing-page";
@@ -31,25 +39,58 @@ program
   .command("create")
   .argument("<project-name>")
   .action(async (projectName: string) => {
-    const templateChoices = [
-      "next-js-fullstack-with-mongodb",
-      "next-js-fullstack-with-firebase",
+    const mainTemplateChoices = [
+      "next-js-fullstack",
       "next-js-frontend",
       "vue-dynamic-page",
       "vue-landing-page",
     ] as const;
 
-    const answers = await inquirer.prompt<{ template: TemplateChoice }>([
+    // Pilihan pertama: kategori besar
+    const { mainTemplate } = await inquirer.prompt<{
+      mainTemplate: MainTemplateChoice;
+    }>([
       {
         type: "rawlist",
-        name: "template",
+        name: "mainTemplate",
         message: "Pilih template:",
-        choices: templateChoices,
+        choices: mainTemplateChoices,
         default: 0,
       },
     ]);
 
-    const templatePath = path.join(cliRoot, "templates", answers.template);
+    // Pilihan kedua: detail berdasarkan pilihan pertama
+    let selectedTemplate: TemplateChoice;
+
+    if (mainTemplate === "next-js-fullstack") {
+      const { fullstackVariant } = await inquirer.prompt<{
+        fullstackVariant: TemplateChoice;
+      }>([
+        {
+          type: "rawlist",
+          name: "fullstackVariant",
+          message: "Pilih varian Next.js fullstack:",
+          choices: [
+            {
+              name: "Next.js Fullstack + MongoDB",
+              value: "next-js-fullstack-with-mongodb",
+            },
+            {
+              name: "Next.js Fullstack + Firebase",
+              value: "next-js-fullstack-with-firebase",
+            },
+          ],
+          default: 0,
+        },
+      ]);
+
+      selectedTemplate = fullstackVariant;
+    } else {
+      // Untuk selain fullstack, nama folder = nama pilihan pertama
+      selectedTemplate = mainTemplate;
+    }
+
+    const templatePath = path.join(cliRoot, "templates", selectedTemplate);
 
     const cwd = process.cwd();
     const targetPath = projectName === "." ? cwd : path.join(cwd, projectName);
