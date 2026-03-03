@@ -47,93 +47,162 @@ program
       "php native",
     ] as const;
 
-    // Pilihan pertama: kategori besar
-    const { mainTemplate } = await inquirer.prompt<{
-      mainTemplate: MainTemplateChoice;
-    }>([
-      {
-        type: "rawlist",
-        name: "mainTemplate",
-        message: "Pilih template:",
-        choices: mainTemplateChoices,
-        default: 0,
-      },
-    ]);
+    // Pilihan pertama & kedua dengan dukungan Back dan Exit
+    let selectedTemplate: TemplateChoice | null = null;
 
-    // Pilihan kedua: detail berdasarkan pilihan pertama
-    let selectedTemplate: TemplateChoice;
-
-    if (mainTemplate === "next-js-fullstack") {
-      const { fullstackVariant } = await inquirer.prompt<{
-        fullstackVariant: TemplateChoice;
+    mainLoop: while (!selectedTemplate) {
+      // Pilihan pertama: kategori besar
+      const { mainTemplate } = await inquirer.prompt<{
+        mainTemplate: MainTemplateChoice | "exit";
       }>([
         {
           type: "rawlist",
-          name: "fullstackVariant",
-          message: "Pilih varian Next.js fullstack:",
+          name: "mainTemplate",
+          message: "Pilih template:",
           choices: [
+            ...mainTemplateChoices,
+            new inquirer.Separator(),
             {
-              name: "Next.js Fullstack + MongoDB",
-              value: "next-js-fullstack-with-mongodb",
-            },
-            {
-              name: "Next.js Fullstack + Firebase",
-              value: "next-js-fullstack-with-firebase",
+              name: "Keluar",
+              value: "exit",
             },
           ],
           default: 0,
         },
       ]);
 
-      selectedTemplate = fullstackVariant;
-    } else if (mainTemplate === "vue") {
-      const { vueVariant } = await inquirer.prompt<{
-        vueVariant: TemplateChoice;
-      }>([
-        {
-          type: "rawlist",
-          name: "vueVariant",
-          message: "Pilih varian Vue:",
-          choices: [
-            {
-              name: "Vue Landing Page",
-              value: "vue-landing-page",
-            },
-            {
-              name: "Vue Dynamic Page",
-              value: "vue-dynamic-page",
-            },
-          ],
-          default: 0,
-        },
-      ]);
+      if (mainTemplate === "exit") {
+        console.log(chalk.yellow("Keluar tanpa membuat project."));
+        process.exit(0);
+      }
 
-      selectedTemplate = vueVariant;
-    } else if (mainTemplate === "php native") {
-      const { phpVariant } = await inquirer.prompt<{
-        phpVariant: TemplateChoice;
-      }>([
-        {
-          type: "rawlist",
-          name: "phpVariant",
-          message: "Pilih varian PHP:",
-          choices: [
-            {
-              name: "PHP Native Landing",
-              value: "php-native-landing",
-            },
-          ],
-          default: 0,
-        },
-      ]);
+      // Pilihan kedua: detail berdasarkan pilihan pertama
+      if (mainTemplate === "next-js-fullstack") {
+        const { fullstackVariant } = await inquirer.prompt<{
+          fullstackVariant: TemplateChoice | "back" | "exit";
+        }>([
+          {
+            type: "rawlist",
+            name: "fullstackVariant",
+            message: "Pilih varian Next.js fullstack:",
+            choices: [
+              {
+                name: "Next.js Fullstack + MongoDB",
+                value: "next-js-fullstack-with-mongodb",
+              },
+              {
+                name: "Next.js Fullstack + Firebase",
+                value: "next-js-fullstack-with-firebase",
+              },
+              new inquirer.Separator(),
+              {
+                name: "⬅️ Kembali",
+                value: "back",
+              },
+              {
+                name: "Keluar",
+                value: "exit",
+              },
+            ],
+            default: 0,
+          },
+        ]);
 
-      selectedTemplate = phpVariant;
-    } else {
-      // Untuk selain fullstack, vue & php, nama folder = nama pilihan pertama
-      selectedTemplate = mainTemplate as TemplateChoice;
+        if (fullstackVariant === "back") {
+          continue mainLoop;
+        }
+
+        if (fullstackVariant === "exit") {
+          console.log(chalk.yellow("Keluar tanpa membuat project."));
+          process.exit(0);
+        }
+
+        selectedTemplate = fullstackVariant as TemplateChoice;
+      } else if (mainTemplate === "vue") {
+        const { vueVariant } = await inquirer.prompt<{
+          vueVariant: TemplateChoice | "back" | "exit";
+        }>([
+          {
+            type: "rawlist",
+            name: "vueVariant",
+            message: "Pilih varian Vue:",
+            choices: [
+              {
+                name: "Vue Landing Page",
+                value: "vue-landing-page",
+              },
+              {
+                name: "Vue Dynamic Page",
+                value: "vue-dynamic-page",
+              },
+              new inquirer.Separator(),
+              {
+                name: "⬅️ Kembali",
+                value: "back",
+              },
+              {
+                name: "Keluar",
+                value: "exit",
+              },
+            ],
+            default: 0,
+          },
+        ]);
+
+        if (vueVariant === "back") {
+          continue mainLoop;
+        }
+
+        if (vueVariant === "exit") {
+          console.log(chalk.yellow("Keluar tanpa membuat project."));
+          process.exit(0);
+        }
+
+        selectedTemplate = vueVariant as TemplateChoice;
+      } else if (mainTemplate === "php native") {
+        const { phpVariant } = await inquirer.prompt<{
+          phpVariant: TemplateChoice | "back" | "exit";
+        }>([
+          {
+            type: "rawlist",
+            name: "phpVariant",
+            message: "Pilih varian PHP:",
+            choices: [
+              {
+                name: "PHP Native Landing",
+                value: "php-native-landing",
+              },
+              new inquirer.Separator(),
+              {
+                name: "⬅️ Kembali",
+                value: "back",
+              },
+              {
+                name: "Keluar",
+                value: "exit",
+              },
+            ],
+            default: 0,
+          },
+        ]);
+
+        if (phpVariant === "back") {
+          continue mainLoop;
+        }
+
+        if (phpVariant === "exit") {
+          console.log(chalk.yellow("Keluar tanpa membuat project."));
+          process.exit(0);
+        }
+
+        selectedTemplate = phpVariant as TemplateChoice;
+      } else {
+        // Untuk selain fullstack, vue & php, nama folder = nama pilihan pertama
+        selectedTemplate = mainTemplate as TemplateChoice;
+      }
     }
 
-    const templatePath = path.join(cliRoot, "templates", selectedTemplate);
+    const templatePath = path.join(cliRoot, "templates", selectedTemplate!);
 
     const cwd = process.cwd();
     const targetPath = projectName === "." ? cwd : path.join(cwd, projectName);
