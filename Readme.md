@@ -29,12 +29,12 @@ rizki create toko-online
 
 ## 📦 Template
 
-| Langkah 1 (Kategori)    | Langkah 2 (Varian)           | Folder template               |
-| ----------------------- | ---------------------------- | ----------------------------- |
-| **next-js-fullstack**   | MongoDB / Firebase           | `next-js-fullstack-with-*`    |
-| **next-js-frontend**    | -                            | `next-js-frontend`           |
-| **vue**                 | Landing / Dynamic Page       | `vue-landing-page`, `vue-dynamic-page` |
-| **php native**          | PHP Native Landing           | `php-native-landing`          |
+| Langkah 1 (Kategori)  | Langkah 2 (Varian)     | Folder template                        |
+| --------------------- | ---------------------- | -------------------------------------- |
+| **next-js-fullstack** | MongoDB / Firebase     | `next-js-fullstack-with-*`             |
+| **next-js-frontend**  | -                      | `next-js-frontend`                     |
+| **vue**               | Landing / Dynamic Page | `vue-landing-page`, `vue-dynamic-page` |
+| **php native**        | PHP Native Landing     | `php-native-landing`                   |
 
 ---
 
@@ -50,4 +50,3 @@ Project siap dikembangkan.
 ---
 
 **Lisensi:** ISC
-# rizki-cli
