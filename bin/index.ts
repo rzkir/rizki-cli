@@ -17,8 +17,8 @@ const __dirname = path.dirname(__filename);
 type MainTemplateChoice =
   | "next-js-fullstack"
   | "next-js-frontend"
-  | "vue-dynamic-page"
-  | "vue-landing-page";
+  | "vue"
+  | "php native";
 
 /** Template folder final yang ada di /templates */
 type TemplateChoice =
@@ -26,7 +26,8 @@ type TemplateChoice =
   | "next-js-fullstack-with-firebase"
   | "next-js-frontend"
   | "vue-dynamic-page"
-  | "vue-landing-page";
+  | "vue-landing-page"
+  | "php-native-landing";
 
 /** Root folder CLI (berbeda saat dev vs build) */
 const cliRoot = fs.existsSync(path.join(__dirname, "..", "templates"))
@@ -42,8 +43,8 @@ program
     const mainTemplateChoices = [
       "next-js-fullstack",
       "next-js-frontend",
-      "vue-dynamic-page",
-      "vue-landing-page",
+      "vue",
+      "php native",
     ] as const;
 
     // Pilihan pertama: kategori besar
@@ -85,9 +86,51 @@ program
       ]);
 
       selectedTemplate = fullstackVariant;
+    } else if (mainTemplate === "vue") {
+      const { vueVariant } = await inquirer.prompt<{
+        vueVariant: TemplateChoice;
+      }>([
+        {
+          type: "rawlist",
+          name: "vueVariant",
+          message: "Pilih varian Vue:",
+          choices: [
+            {
+              name: "Vue Landing Page",
+              value: "vue-landing-page",
+            },
+            {
+              name: "Vue Dynamic Page",
+              value: "vue-dynamic-page",
+            },
+          ],
+          default: 0,
+        },
+      ]);
+
+      selectedTemplate = vueVariant;
+    } else if (mainTemplate === "php native") {
+      const { phpVariant } = await inquirer.prompt<{
+        phpVariant: TemplateChoice;
+      }>([
+        {
+          type: "rawlist",
+          name: "phpVariant",
+          message: "Pilih varian PHP:",
+          choices: [
+            {
+              name: "PHP Native Landing",
+              value: "php-native-landing",
+            },
+          ],
+          default: 0,
+        },
+      ]);
+
+      selectedTemplate = phpVariant;
     } else {
-      // Untuk selain fullstack, nama folder = nama pilihan pertama
-      selectedTemplate = mainTemplate;
+      // Untuk selain fullstack, vue & php, nama folder = nama pilihan pertama
+      selectedTemplate = mainTemplate as TemplateChoice;
     }
 
     const templatePath = path.join(cliRoot, "templates", selectedTemplate);

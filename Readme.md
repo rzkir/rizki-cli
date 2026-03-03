@@ -29,12 +29,12 @@ rizki create toko-online
 
 ## 📦 Template
 
-| Template              | Keterangan                    |
-| --------------------- | ----------------------------- |
-| **next-js-fullstack** | Next.js + backend (fullstack) |
-| **next-js-frontend**  | Next.js frontend saja         |
-| **vue-dynamic-page**  | Vue, halaman dinamis          |
-| **vue-landing-page**  | Vue, landing page             |
+| Langkah 1 (Kategori)    | Langkah 2 (Varian)           | Folder template               |
+| ----------------------- | ---------------------------- | ----------------------------- |
+| **next-js-fullstack**   | MongoDB / Firebase           | `next-js-fullstack-with-*`    |
+| **next-js-frontend**    | -                            | `next-js-frontend`           |
+| **vue**                 | Landing / Dynamic Page       | `vue-landing-page`, `vue-dynamic-page` |
+| **php native**          | PHP Native Landing           | `php-native-landing`          |
 
 ---
 
