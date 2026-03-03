@@ -32,7 +32,8 @@ program
   .argument("<project-name>")
   .action(async (projectName: string) => {
     const templateChoices = [
-      "next-js-fullstack",
+      "next-js-fullstack-with-mongodb",
+      "next-js-fullstack-with-firebase",
       "next-js-frontend",
       "vue-dynamic-page",
       "vue-landing-page",
@@ -50,9 +51,20 @@ program
 
     const templatePath = path.join(cliRoot, "templates", answers.template);
 
-    const targetPath = path.join(process.cwd(), projectName);
+    const cwd = process.cwd();
+    const targetPath = projectName === "." ? cwd : path.join(cwd, projectName);
 
-    if (fs.existsSync(targetPath)) {
+    if (projectName === ".") {
+      const existingFiles = await fs.readdir(targetPath);
+      if (existingFiles.length > 0) {
+        console.log(
+          chalk.red(
+            "Folder saat ini tidak kosong. Jalankan di folder kosong atau gunakan nama project baru.",
+          ),
+        );
+        process.exit(1);
+      }
+    } else if (fs.existsSync(targetPath)) {
       console.log(chalk.red("Folder sudah ada!"));
       process.exit(1);
     }
