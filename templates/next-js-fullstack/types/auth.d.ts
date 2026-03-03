@@ -1,0 +1,121 @@
+import { IAccount } from "@/models/Account";
+
+type UserRole = "admins" | "user";
+
+interface Accounts {
+  _id: string;
+  email: string;
+  name: string;
+  role: UserRole;
+  picture?: string;
+  status: "active" | "inactive";
+  isVerified: "true" | "false" | boolean;
+  emailVerified?: boolean;
+  password?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+interface AuthContextType {
+  user: Accounts | null;
+  loading: boolean;
+  userRole: UserRole | null;
+  signIn: (email: string, password: string) => Promise<Accounts | undefined>;
+  signOut: () => Promise<void>;
+  signUp: (
+    name: string,
+    email: string,
+    password: string,
+  ) => Promise<Accounts | undefined>;
+
+  resetPassword: (email: string) => Promise<void>;
+  forgetPassword: (email: string) => Promise<void>;
+  changePassword: (newPassword: string) => Promise<boolean>;
+  refreshUserData: () => Promise<Accounts | null>;
+  resetToken: string | null;
+  setResetToken: (token: string | null) => void;
+  verifyOtp: (token: string) => Promise<void>;
+  finalizeResetPassword: (newPassword: string) => Promise<void>;
+  passwordResetStep: "otp" | "password";
+  passwordResetOtp: string;
+  passwordResetNewPassword: string;
+  passwordResetConfirmPassword: string;
+  passwordResetIsLoading: boolean;
+  setPasswordResetStep: (step: "otp" | "password") => void;
+  setPasswordResetOtp: (otp: string) => void;
+  setPasswordResetNewPassword: (password: string) => void;
+  setPasswordResetConfirmPassword: (password: string) => void;
+  setPasswordResetIsLoading: (loading: boolean) => void;
+  handleVerifyOtpForPasswordReset: (otp: string) => Promise<void>;
+  handleResetPasswordWithOtp: () => Promise<void>;
+  resetPasswordFlowState: () => void;
+  // Login form state
+  loginEmail: string;
+  loginPassword: string;
+  loginIsLoading: boolean;
+  loginRateLimitResetTime: Date | null;
+  loginIsRateLimited: boolean;
+
+  // Login form functions
+  setLoginEmail: (email: string) => void;
+  setLoginPassword: (password: string) => void;
+  setLoginIsLoading: (loading: boolean) => void;
+  handleLoginSubmit: () => Promise<void>;
+  resetLoginState: () => void;
+  // Forget password form state
+  forgetPasswordEmail: string;
+  forgetPasswordIsLoading: boolean;
+  // Forget password form functions
+  setForgetPasswordEmail: (email: string) => void;
+  setForgetPasswordIsLoading: (loading: boolean) => void;
+  handleForgetPasswordSubmit: () => Promise<void>;
+  resetForgetPasswordState: () => void;
+  // Signup form state
+  signupName: string;
+  signupEmail: string;
+  signupPassword: string;
+  signupConfirmPassword: string;
+  signupIsLoading: boolean;
+  // Signup form functions
+  setSignupName: (name: string) => void;
+  setSignupEmail: (email: string) => void;
+  setSignupPassword: (password: string) => void;
+  setSignupConfirmPassword: (confirmPassword: string) => void;
+  setSignupIsLoading: (loading: boolean) => void;
+  handleSignupSubmit: (
+    name: string,
+    email: string,
+    password: string,
+    confirmPassword?: string,
+  ) => Promise<void>;
+  resetSignupState: () => void;
+  // OTP form state
+  otp: string;
+  otpIsLoading: boolean;
+  otpIsResending: boolean;
+  // OTP form functions
+  setOtp: (otp: string) => void;
+  setOtpIsLoading: (loading: boolean) => void;
+  setOtpIsResending: (resending: boolean) => void;
+  handleOtpSubmit: (otp: string) => Promise<void>;
+  handleResendOTP: (email: string) => Promise<void>;
+  resetOtpState: () => void;
+}
+
+export interface IAccount extends mongoose.Document {
+  email: string;
+  password?: string;
+  name: string;
+  role: UserRole;
+  picture?: string;
+  status: "active" | "inactive";
+  isVerified: "true" | "false" | boolean;
+  resetToken?: string;
+  resetTokenExpiry?: Date;
+  verificationToken?: string;
+  verificationTokenExpiry?: Date;
+  comparePassword(candidatePassword: string): Promise<boolean>;
+  isModified(path: string): boolean;
+  save(): Promise<this>;
+  populate(path: string): Promise<this>;
+}
